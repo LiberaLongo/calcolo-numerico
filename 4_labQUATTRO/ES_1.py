@@ -83,7 +83,7 @@ print('Metodo di bisezione \n x =',x_bis,'\n iter_bise=', i_bis, '\n iter_max=',
 print('\n')
 
 
-(x_newton, i_newton, err_newton, err_newton) = newton(f, df, tolf, tolx, maxit, xTrue)
+(x_newton, i_newton, diff_newton, err_newton) = newton(f, df, tolf, tolx, maxit, xTrue)
 print('Metodo di Newton \n x =', x_newton,'\n iter_new=', i_newton, '\n err_new=', err_newton)
 print('\n')
 
