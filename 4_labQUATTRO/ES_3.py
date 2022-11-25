@@ -42,6 +42,7 @@ def newton( f, df, tolf, tolx, maxit, xTrue, x0=0):
     
     while ( abs(f(x)) > tolf and i < maxit ): 
         x_new = x - f(x) / df(x)
+        print(x_new)
         err[i] = abs( x_new - x )
         vecErrore[i] = abs( x - xTrue )
         i=i+1
@@ -80,7 +81,7 @@ def succ_app(f, g, tolf, tolx, maxit, xTrue, x0=0):
 tolx= 10**(-10)
 tolf = 10**(-6)
 maxit=100
-x0= 0
+x0= 1
 xTrue = 0 #in questo modo vecErrore mi 'salva le x'
  
 '''primo punto del esercizio'''
@@ -107,7 +108,7 @@ time_B1_bis = time.time()
 print('Metodo di bisezione \n x =',x1_bis,'\n iter_bise=', i1_bis, '\n iter_max=', k1_bis)
 
 time_A1_newton = time.time()
-(x1_newton, i1_newton, diff1_newton, err1_newton) = newton(f1, df1, tolf, tolx, maxit, xTrue)
+(x1_newton, i1_newton, diff1_newton, err1_newton) = newton(f1, df1, tolf, tolx, maxit, xTrue, x0)
 time_B1_newton = time.time()
 print('Metodo di Newton \n x =', x1_newton,'\n iter_new=', i1_newton, '\n err_new=', diff1_newton)
 
@@ -151,10 +152,10 @@ print('appr_succ: a = ', time_A1_succ,   ', b = ', time_B1_succ,   ', b-a = ', t
 
 
 '''secondo punto del esercizio'''
-f2 = lambda x: x - x**(1/3) - 2
+f2 = lambda x: x - pow(x, 1/3) - 2
 # se lo scrivo come 'df2 = lambda x: 1 - x**(-2/3) / 3' mi dice '0 cannot be raised to a negative power'
 # ma così Newton mi fa 'ZeroDivisionError: float division by zero'
-df2 = lambda x: 1 - 1/(3 * x**(2/3))
+df2 = lambda x: 1 - (1/3)*pow(x, -2/3)
 g2 = lambda x: x**(1/3) + 2
 a2 = 3
 b2 = 5
@@ -176,7 +177,7 @@ time_B2_bis = time.time()
 print('Metodo di bisezione 2\n x =',x2_bis,'\n iter_bise=', i2_bis, '\n iter_max=', k2_bis)
 
 time_A2_newton = time.time()
-(x2_newton, i2_newton, diff2_newton, err2_newton) = newton(f2, df2, tolf, tolx, maxit, xTrue)
+(x2_newton, i2_newton, diff2_newton, err2_newton) = newton(f2, df2, tolf, tolx, maxit, xTrue, x0)
 time_B2_newton = time.time()
 print('Metodo di Newton 2\n x =', x2_newton,'\n iter_new=', i2_newton, '\n err_new=', diff2_newton)
 
