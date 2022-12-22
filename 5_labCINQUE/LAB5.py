@@ -48,20 +48,11 @@ def AT(x, K):
 def get_image_file(path):
     imgColor = plt.imread(path)
     print('dimensioni immagine originale = ', imgColor.shape)
-    imgGrey = color.rgb2gray(imgColor)    
-    print('dimensioni immagine grigia = ', imgGrey.shape)
     
-    
-    plt.figure(figsize = (20,10))
-    ax1 = plt.subplot(1, 2, 1)
-    ax1.imshow(imgColor, cmap = 'gray')
+    plt.imshow(imgColor)
     plt.title('immagine Originale', fontsize = 20)
     
-    ax2 = plt.subplot(1, 2, 2)
-    ax2.imshow(imgGrey, cmap = 'gray')
-    plt.title('immagine Grey', fontsize = 20)
-    plt.show()
-    return imgGrey
+    return imgColor
 
 
 ''' formazione dell' immagine blurrata '''
@@ -161,10 +152,10 @@ def deblur_immagini(original_img, b, K, maxit, _lambda=0, use_library=True):
 dim_kernel = 9
 sigma = 0.02
 
-img = data.camera()
-#img = get_image_file('rosa.jpeg')
-
-(X, K, b) = build_blur_noise_img(img, dim_kernel, sigma)
+#img = data.camera()
+img = get_image_file('rosa.jpeg')
+red = img[:,:,0] 
+(X, K, b) = build_blur_noise_img(red, dim_kernel, sigma)
 
 ''' sol Naive '''
 max_it = 100

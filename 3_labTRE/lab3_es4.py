@@ -4,8 +4,8 @@ import scipy.linalg
 from skimage import data
 
 
-A = data.camera()
-#A = data.coins()
+#A = data.camera()
+A = data.coins()
 
 
 print(type(A))
