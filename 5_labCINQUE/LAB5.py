@@ -6,7 +6,7 @@ from scipy.optimize import minimize
 
 '''nostra implementazione di gradienti coniugati (copiata da es_4 lab 4 e modificata)'''
 
-def next_step(f, grad_f, x,grad): # backtracking procedure for the choice of the steplength
+def next_step(f, grad_f, x, grad): # backtracking procedure for the choice of the steplength
     alpha=1.1
     rho = 0.5
     c1 = 0.25
@@ -21,19 +21,13 @@ def next_step(f, grad_f, x,grad): # backtracking procedure for the choice of the
     return alpha
 
 
-def gradienti_coniugati_minimize(f, grad_f, x0, mode, step, MAXITERATION, ABSOLUTE_STOP): 
+def gradienti_coniugati_minimize(f, grad_f, x0, x_true, step, MAXITERATION, ABSOLUTE_STOP): 
     
     x=np.zeros((2,MAXITERATION)) #||x_k - x_true||
-    norm_grad_list=np.zeros((1,MAXITERATION)) #norma dei gradienti ||gradiente f(x_k)|| k = 0,1..
-    function_eval_list=np.zeros((1,MAXITERATION)) #||f(x_k)|| k = 0..
-    error_list=np.zeros((1,MAXITERATION)) 
     
     k=0
-    x_last = np.array([x0[0],x0[1]])
-    x[:,k] = x_last
-    function_eval_list[:,k] = f(x0)
-    # error_list[:,k] = np.linalg.norm(x0-x_true)
-    norm_grad_list[:,k] = np.linalg.norm(grad_f(x0))
+    x_last_matrice = np.copy(x0) #nel lab 4 era x_last = np.array([x0[0],x0[1]])
+    x_last = np.reshape(x_last_matrice, x_last_matrice[0] * x_last_matrice[1])
      
     while (np.linalg.norm(grad_f(x_last))>ABSOLUTE_STOP and k < MAXITERATION ):
         
@@ -41,32 +35,24 @@ def gradienti_coniugati_minimize(f, grad_f, x0, mode, step, MAXITERATION, ABSOLU
         grad = grad_f(x_last)
         
         # backtracking step
-        step = next_step(x_last, grad)
+        step = next_step(f, grad_f, x_last, grad)
       
         if(step==-1):
             print('non converge')
             return
     
-        x_last = x_last -step*grad
-      
-        x[:,k] = x_last
-        function_eval_list[:,k] = f(x_last)
-        #error_list[:,k] = np.linalg.norm(x_last -x_true)
-        norm_grad_list[:,k] = np.linalg.norm(grad_f(x_last))
-
-    function_eval_list = function_eval_list[:, :k]
-    #error_list = error_list[:, :k]
-    norm_grad_list = norm_grad_list[:, :k]
-    
+        x_last = x_last -step*grad    
+        
+        ''' Analizza l’andamento del PSNR e dell’MSE al variare del numero di iterazioni'''
+        x_last_matrice = np.reshape(x_last, x0.shape)
+        PSNR = metrics.peak_signal_noise_ratio(x_true, x_last_matrice)    
+        MSE = metrics.mean_squared_error(x_true, x_last_matrice)    
+        print(f'iterazione k = {k}, abbiamo PNSR = {PSNR} e MSE = {MSE}')
     
     print('iterations=',k)
     print('last guess: x=(%f,%f)'%(x[0,k-1],x[1,k-1]))
-
-    if mode=='plot_history': #si sceglie di salvare o meno, perche' e' molto costoso
-        return (x_last,norm_grad_list, function_eval_list, error_list, k, x)
-      
-    else:
-        return (x_last,norm_grad_list, function_eval_list, error_list, k)
+    
+    return (x_last, k)
 
 '''+************************+
    *     ora inizia lab5    *
@@ -117,7 +103,7 @@ def get_image_file(path):
     print('dimensioni immagine originale = ', imgColor.shape)
     
     plt.imshow(imgColor)
-    plt.title('immagine Originale', fontsize = 20)
+    plt.title(f'img Colorata ({path})', fontsize = 20)
     
     return imgColor
 
@@ -180,9 +166,9 @@ def deblur_immagini(original_img, b, K, maxit, _lambda=0, use_library=True):
         deblurred_img = np.reshape(res.x, (m, n))
         
         PSNR = metrics.peak_signal_noise_ratio(original_img, deblurred_img)    
-        print('PSNR =', PSNR)
+        print('library minimize, PSNR =', PSNR)
         MSE = metrics.mean_squared_error(original_img, deblurred_img)    
-        print('MSE =', MSE)
+        print('library minimize, MSE =', MSE)
         
         ''' Analizza l’andamento del PSNR e dell’MSE al variare del numero di iterazioni'''
         iterazioni = res.nit    #mi sfugge come possiamo calcolare PSNR e MSE al variare delle iterazioni se use_library = True
@@ -192,8 +178,16 @@ def deblur_immagini(original_img, b, K, maxit, _lambda=0, use_library=True):
         step=0.1
         MAXITERATION=maxit
         ABSOLUTE_STOP=1.e-5
-        mode='plot_history'
-        (x_last, norm_grad_list, function_eval_list, error_list, k, x) = gradienti_coniugati_minimize(f_reg, df_reg, x0, mode, step, MAXITERATION, ABSOLUTE_STOP)
+        (x_last, iterazioni) = gradienti_coniugati_minimize(f_reg, df_reg, x0, original_img, step, MAXITERATION, ABSOLUTE_STOP)        
+        
+        deblurred_img = np.reshape(x_last, (m, n))
+        
+        PSNR = metrics.peak_signal_noise_ratio(original_img, deblurred_img)    
+        print('deblurred img (last), PSNR =', PSNR)
+        MSE = metrics.mean_squared_error(original_img, deblurred_img)    
+        print('deblurred img (last), MSE =', MSE)
+        print('iterazioni =', iterazioni)
+        
         print('and idk vvhat to do novv to calculate PSNR and MSE')
     
     return (deblurred_img, PSNR, MSE)
@@ -214,11 +208,11 @@ def apply_for_image(all_color, color, dim_kernel, sigma, devSt, array_lambda, us
         plt.figure(figsize = (20,20))
         original = plt.subplot(1, 3, 1)
         original.imshow(original_img, cmap = 'gray')
-        plt.title('immagine Originale', fontsize = font)
+        plt.title('originale', fontsize = font)
         
         blur = plt.subplot(1, 3, 2)
         blur.imshow(b, cmap = 'gray')
-        plt.title('blur', fontsize = font)
+        plt.title('blur+noise', fontsize = font)
     
         solNaive = plt.subplot(1, 3, 3)
         solNaive.imshow(deblur_img_solNaive, cmap = 'gray')
@@ -228,7 +222,7 @@ def apply_for_image(all_color, color, dim_kernel, sigma, devSt, array_lambda, us
         '''regolarized vvith an array of lambdas'''
         for _lambda in array_lambda:
             ''' regolarizzazione '''
-            print('lambda =', _lambda)
+            print('\nlambda =', _lambda)
             (deblur_img_regolar, PSNR_regolar, MSE_regolar) = deblur_immagini(X, b, K, max_it, _lambda, use_library)
             
             plt.imshow(deblur_img_regolar, cmap = 'gray')
