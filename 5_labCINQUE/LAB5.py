@@ -21,17 +21,17 @@ def next_step(f, grad_f, x, grad): # backtracking procedure for the choice of th
     return alpha
 
 
-def gradienti_coniugati_minimize(f, grad_f, x0, x_true, step, MAXITERATION, ABSOLUTE_STOP): 
-    
-    x=np.zeros((2,MAXITERATION)) #||x_k - x_true||
+def gradienti_coniugati_minimize(f, grad_f, x0, x_true, step, MAXITERATION, ABSOLUTE_STOP):
     
     k=0
     x_last_matrice = np.copy(x0) #nel lab 4 era x_last = np.array([x0[0],x0[1]])
     x_last = np.reshape(x_last_matrice, x0.shape[0] * x0.shape[1])
+    
+    '''per l'analisi del PSNR e MSE'''
+    iter_PSNR = np.zeros((MAXITERATION))
+    iter_MSE  = np.zeros((MAXITERATION))
      
     while (np.linalg.norm(grad_f(x_last))>ABSOLUTE_STOP and k < MAXITERATION ):
-        
-        k = k+1
         grad = grad_f(x_last)
         
         # backtracking step
@@ -43,16 +43,21 @@ def gradienti_coniugati_minimize(f, grad_f, x0, x_true, step, MAXITERATION, ABSO
     
         x_last = x_last -step*grad    
         
-        ''' Analizza l’andamento del PSNR e dell’MSE al variare del numero di iterazioni'''
+        ''' calcola il PSNR e dell’MSE al variare del numero di iterazioni'''
         x_last_matrice = np.reshape(x_last, x0.shape)
-        PSNR = metrics.peak_signal_noise_ratio(x_true, x_last_matrice)    
-        MSE = metrics.mean_squared_error(x_true, x_last_matrice)    
-        print(f'iterazione k = {k}, abbiamo PNSR = {PSNR} e MSE = {MSE}')
+        iter_PSNR[k] = metrics.peak_signal_noise_ratio(x_true, x_last_matrice)
+        iter_MSE [k] = metrics.mean_squared_error     (x_true, x_last_matrice)
+        #print(f'iterazione k = {k}, abbiamo PNSR = {iter_PSNR[k]} e MSE = {iter_MSE[k]}')
+        
+        k = k+1
     
     print('iterations=',k)
-    print('last guess: x=(%f,%f)'%(x[0,k-1],x[1,k-1]))
     
-    return (x_last, k)
+    '''per l'analisi del PNSR e MSE'''
+    iter_PSNR = iter_PSNR[:k]
+    iter_MSE  = iter_MSE [:k]
+    
+    return (x_last, k, iter_PSNR, iter_MSE)
 
 '''+************************+
    *     ora inizia lab5    *
@@ -174,11 +179,11 @@ def deblur_immagini(original_img, b, K, maxit, _lambda=0, use_library=True):
         iterazioni = res.nit    #mi sfugge come possiamo calcolare PSNR e MSE al variare delle iterazioni se use_library = True
         print('iterazioni =', iterazioni)
     else:
-        print('i haven\'t implemented Gradienti Coniugati yet')
+        print('my Gradienti Coniugati method is used')
         step=0.1
         MAXITERATION=maxit
         ABSOLUTE_STOP=1.e-5
-        (x_last, iterazioni) = gradienti_coniugati_minimize(f_reg, df_reg, x0, original_img, step, MAXITERATION, ABSOLUTE_STOP)        
+        (x_last, k, iter_PSNR, iter_MSE) = gradienti_coniugati_minimize(f_reg, df_reg, x0, original_img, step, MAXITERATION, ABSOLUTE_STOP)        
         
         deblurred_img = np.reshape(x_last, (m, n))
         
@@ -186,9 +191,17 @@ def deblur_immagini(original_img, b, K, maxit, _lambda=0, use_library=True):
         print('deblurred img (last), PSNR =', PSNR)
         MSE = metrics.mean_squared_error(original_img, deblurred_img)    
         print('deblurred img (last), MSE =', MSE)
-        print('iterazioni =', iterazioni)
+        print('iterazioni =', k)
         
-        print('and idk vvhat to do novv to calculate PSNR and MSE')
+        '''plot di 'Analizza l’andamento del PSNR e dell’MSE al variare del numero di iterazioni'''
+        iterazioni = np.linspace(0, k, k)
+        plt.figure()
+        ax1 = plt.subplot(1,2,1)
+        ax1.plot(iterazioni, iter_PSNR, color='orange', marker='o', label='PSNR')
+        ax2 = plt.subplot(1,2,2)
+        ax2.plot(iterazioni, iter_MSE , color='blue'  , marker='o', label='MSE' )
+        plt.legend()
+        plt.show()
     
     return (deblurred_img, PSNR, MSE)
 
