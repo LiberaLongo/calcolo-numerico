@@ -27,7 +27,7 @@ def gradienti_coniugati_minimize(f, grad_f, x0, x_true, step, MAXITERATION, ABSO
     
     k=0
     x_last_matrice = np.copy(x0) #nel lab 4 era x_last = np.array([x0[0],x0[1]])
-    x_last = np.reshape(x_last_matrice, x_last_matrice[0] * x_last_matrice[1])
+    x_last = np.reshape(x_last_matrice, x0.shape[0] * x0.shape[1])
      
     while (np.linalg.norm(grad_f(x_last))>ABSOLUTE_STOP and k < MAXITERATION ):
         
