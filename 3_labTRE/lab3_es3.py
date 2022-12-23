@@ -8,7 +8,7 @@ def p(alpha, x):
     '''Funzione per valutare il polinomio p, in un punto x, dati i coefficienti alpha'''
     A = np.zeros((len(x), len(alpha)))
     for i in range(len(alpha)):
-        A[:,i] = x**i
+        A[:,i] = np.power(x, i)
     y = np.dot(A,alpha)
     return y
 
@@ -17,7 +17,7 @@ def polinomio_approssimante(grado_polinomio, size_dati, x_plot, y_plot):
     #matrice A
     A = np.zeros((size_dati, grado_polinomio+1))
     for i in range(grado_polinomio+1):
-        A[:,i] = x_plot**i
+        A[:,i] = np.power(x_plot, i)
     
     ''' Risoluzione tramite equazioni normali'''
     # calcoliamo la matrice del sistema e il termine noto a parte
@@ -48,8 +48,8 @@ def test_polinomio (funzione, start, stop):
         # ... insieme a quello del polinomio di approssimazione p(x)
         plt.plot(x_plot, y_polinomio, color, marker='o', label = f'polinomio grado {n}')
         '''ii. riportare il valore dell’errore commesso nel punto x = 0'''
-        # errore = funzione(0) - p(alpha, 0)
-        # print(f'grado {n}, errore {errore}')
+        errore = funzione(0) - p(alpha, {0})
+        print(f'grado {n}, errore {errore}')
         '''iii. Calcolare la norma 2 dell’errore di approssimazione,
         commesso sugli m nodi, per ciascun valore di n ∈ {1, 5, 7}'''
         for grado in [1, 5, 7]:

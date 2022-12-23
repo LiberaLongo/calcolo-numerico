@@ -1,0 +1,52 @@
+Buongiorno,
+sono Libera Longo
+in questi giorni stavo provando a completare il laboratorio 3 e il laboratorio 5 di Calcolo Numerico, e avrei alcune domande.
+per il laboratorio 3 ho le seguenti domande:
+
+nell'esercizio numero 3 si richiede:
+
+-     'ii. Per ciascun valore di n ∈ {1, 2, 3, 5, 7}, riportare il valore dell’errore commesso
+      nel punto x = 0.'
+      ma per farlo mi serve sapere il valore del polinomio con x = 0,
+      invece ho solo una funzione che valuta il polinomio prendendo come input un array di coordinate x.
+      quindi fare una cosa simile:
+      errore = funzione(0) - p(alpha, {0})
+      dà un errore su in p
+            A[:,i] = x**i
+      TypeError: unsupported operand type(s) for ** or pow(): 'set' and 'int'
+      quindi mi chiedevo dobbiamo creare una nuova funzione p in modo da potergli dare un singolo valore?
+
+-     'iii. Calcolare la norma 2 dell’errore di approssimazione, commesso sugli m nodi, per ciascun valore di n ∈ {1, 5, 7}.'
+      anche qui la cosa più naturale sarebbe quella di scrivere
+      norma = np.linalg.norm(y_plot - y_polinomio)
+      poichè y_plot (della funzione esatta) e y_polinomio (y_polinomio = p(x_plot))
+      sono vettori che contengono tutti gli m elementi, di cui si calcola una sola norma.
+      quindi la norma del'errore non viene calcolata m volte per gli m nodi ma una volta sola con un vettore di dimensione m.
+      Devo prendere il p precedentemente modificato per calcolare m norme per ogni funzione che poi sarebbero valori assoluti?
+
+per il laboratorio 5 ho le seguenti domande:
+
+-     nell'esercizio 2 e 3 ci viene chiesto di
+      'Utilizzando il metodo del gradiente coniugato implementato dalla funzione minimize, calcolare la soluzione naive. (fatto)
+      ii. Analizza l’andamento del PSNR e dell’MSE al variare del numero di iterazioni.'
+      Guardando nella documentazione della funzione scipy.optimize.minimize:      https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.OptimizeResult.html#scipy.optimize.OptimizeResult
+      vedo che res.nit è un intero che rappresenta 'Number of iterations performed by the optimizer.'
+      quindi come posso fare l'analisi dell'andamento del PSNR e dell'MSE al variare del numero di iterazioni
+      se non ho i risultati intermedi?'
+
+-     nell'esercizio 4 ci viene chiesto di 'ii. Ripetere gli esercizi 2 e 3 sostituendo il metodo del gradiente
+      coniugato con il metodo del gradiente da voi implementato nello scorso laboratorio.''
+      il problema è che nel laboratorio precedente (il laboratorio 4) il metodo funzionava per f in R^2
+      mentre ora deve funzionare per un'immagine di dimensioni (N, M) (esempio N = 224, M = 225)
+      (posto che x0 sia l'immagine corrotta con blur+noise)
+      mi chiedevo ma la f e grad_f utilizzata per il laboratorio 4
+      diventano rispettivamente
+      f (x) = 1/2 * ||Ax − b||^2 + lambda * ||x||^2
+      e il suo gradiente ∇f (x) = AT Ax − AT b + x    ?
+      Non mi è chiaro come possiamo far funzionare il metodo del gradiente nostro in R^(NxM)?
+In attesa di cortese riscontro,
+cordiali saluti
+Libera Longo
+
+Post-Scriptum: se le serve poter vedere il mio codice è pubblico su github al link:
+https://github.com/LiberaLongo/calcolo-numerico .

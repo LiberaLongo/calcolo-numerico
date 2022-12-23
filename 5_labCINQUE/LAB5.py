@@ -190,10 +190,9 @@ def deblur_immagini(original_img, b, K, maxit, _lambda=0, use_library=True):
     else:
         print('i haven\'t implemented Gradienti Coniugati yet')
         step=0.1
-        MAXITERATION=1000
+        MAXITERATION=maxit
         ABSOLUTE_STOP=1.e-5
         mode='plot_history'
-        x0 = b
         (x_last, norm_grad_list, function_eval_list, error_list, k, x) = gradienti_coniugati_minimize(f_reg, df_reg, x0, mode, step, MAXITERATION, ABSOLUTE_STOP)
         print('and idk vvhat to do novv to calculate PSNR and MSE')
     
@@ -246,7 +245,7 @@ devS = 0.02
 for img_name in ['rosa.jpeg', 'vanGogh_ricolorato.jpeg']:
     all_color = get_image_file(img_name)
     lambdas = {0.1, 0.2, 0.5, 1}
-    for lib in [True, False]: #se lib = True sto usando la libreria, altrimenti sto usando Gradienti Coniugati implementato in questo file
+    for lib in [False, True]: #se lib = True sto usando la libreria, altrimenti sto usando Gradienti Coniugati implementato in questo file
         apply_for_image(all_color, color=0, dim_kernel=5, sigma=0.5,  devSt=devS, array_lambda=lambdas, use_library=lib)
         apply_for_image(all_color, color=1, dim_kernel=7, sigma=1,    devSt=devS, array_lambda=lambdas, use_library=lib)
         apply_for_image(all_color, color=2, dim_kernel=9, sigma=1.13, devSt=devS, array_lambda=lambdas, use_library=lib)
