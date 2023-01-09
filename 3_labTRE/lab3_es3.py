@@ -48,7 +48,7 @@ def test_polinomio (funzione, start, stop):
         # ... insieme a quello del polinomio di approssimazione p(x)
         plt.plot(x_plot, y_polinomio, color, marker='o', label = f'polinomio grado {n}')
         '''ii. riportare il valore dell’errore commesso nel punto x = 0'''
-        errore = funzione(0) - p(alpha, {0})
+        errore = funzione(0) - p(alpha, np.array([0]))
         print(f'grado {n}, errore {errore}')
         '''iii. Calcolare la norma 2 dell’errore di approssimazione,
         commesso sugli m nodi, per ciascun valore di n ∈ {1, 5, 7}'''
