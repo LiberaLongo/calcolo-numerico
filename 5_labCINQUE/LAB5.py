@@ -176,34 +176,34 @@ def deblur_immagini(original_img, b, K, maxit, _lambda=0, use_library=True):
         print('library minimize, MSE =', MSE)
         
         ''' Analizza l’andamento del PSNR e dell’MSE al variare del numero di iterazioni'''
-        iterazioni = res.nit    #mi sfugge come possiamo calcolare PSNR e MSE al variare delle iterazioni se use_library = True
-        print('iterazioni =', iterazioni)
+        dir(res)
+        PSNR = np.zeros(max_it + 1)
+        MSE = np.zeros(max_it + 1)
+        for k, x_k in enumerate(res.allvecs):
+            PSNR[k] = metrics.peak_signal_noise_ratio(original_img, x_k.reshape(original_img.shape))
+            MSE [k] = metrics.mean_squared_error(original_img, x_k.reshape(original_img.shape))
+        ite = res.nit #numero di iterazioni da restituire
+        color = ('green', 'purple')
+        PSNR = PSNR[:ite]
+        MSE = MSE[:ite]
+        last_PSNR = PSNR[ ite -1 ]
+        last_MSE = MSE[ ite -1 ]
     else:
         print('my Gradienti Coniugati method is used')
         step=0.1
         MAXITERATION=maxit
         ABSOLUTE_STOP=1.e-5
-        (x_last, k, iter_PSNR, iter_MSE) = gradienti_coniugati_minimize(f_reg, df_reg, x0, original_img, step, MAXITERATION, ABSOLUTE_STOP)        
+        (x_last, ite, PSNR, MSE) = gradienti_coniugati_minimize(f_reg, df_reg, x0, original_img, step, MAXITERATION, ABSOLUTE_STOP)        
         
         deblurred_img = np.reshape(x_last, (m, n))
         
-        PSNR = metrics.peak_signal_noise_ratio(original_img, deblurred_img)    
-        print('deblurred img (last), PSNR =', PSNR)
-        MSE = metrics.mean_squared_error(original_img, deblurred_img)    
-        print('deblurred img (last), MSE =', MSE)
-        print('iterazioni =', k)
-        
-        '''plot di 'Analizza l’andamento del PSNR e dell’MSE al variare del numero di iterazioni'''
-        iterazioni = np.linspace(0, k, k)
-        plt.figure()
-        ax1 = plt.subplot(1,2,1)
-        ax1.plot(iterazioni, iter_PSNR, color='orange', marker='o', label='PSNR')
-        ax2 = plt.subplot(1,2,2)
-        ax2.plot(iterazioni, iter_MSE , color='blue'  , marker='o', label='MSE' )
-        plt.legend()
-        plt.show()
+        last_PSNR = metrics.peak_signal_noise_ratio(original_img, deblurred_img)
+        last_MSE = metrics.mean_squared_error(original_img, deblurred_img)
+        color = ('orange', 'blue')
     
-    return (deblurred_img, PSNR, MSE)
+    print('deblurred img (last), PSNR =', last_PSNR)
+    print('deblurred img (last), MSE =', last_MSE)
+    return (deblurred_img, PSNR, MSE, ite, color)
 
 
 ''' costruzione del problema '''
@@ -214,7 +214,10 @@ def apply_for_image(all_color, color, dim_kernel, sigma, devSt, array_lambda, us
         (X, K, b) = build_blur_noise_img(original_img, dim_kernel, sigma, devSt)
         
         ''' sol Naive '''
-        (deblur_img_solNaive, PSNR_solNaive, MSE_solNaive) = deblur_immagini(X, b, K, max_it, use_library)        
+        (deblur_img_solNaive, PSNR_solNaive, MSE_solNaive, ite_solNaive, color) = deblur_immagini(X, b, K, max_it, use_library)        
+        
+        PSNR_last = PSNR_solNaive[ ite_solNaive -1 ]
+        MSE_last = MSE_solNaive[ ite_solNaive -1 ]
         
         '''plot solNaive'''
         font = 40
@@ -229,17 +232,33 @@ def apply_for_image(all_color, color, dim_kernel, sigma, devSt, array_lambda, us
     
         solNaive = plt.subplot(1, 3, 3)
         solNaive.imshow(deblur_img_solNaive, cmap = 'gray')
-        plt.title(f'solNaive (PSNR: {PSNR_solNaive: .2f} MSE: {MSE_solNaive: .2f})', fontsize=20)
+        plt.title(f'solNaive (PSNR: {PSNR_last: .2f} MSE: {MSE_last: .2f})', fontsize=20)
         plt.show()
         
         '''regolarized vvith an array of lambdas'''
         for _lambda in array_lambda:
             ''' regolarizzazione '''
             print('\nlambda =', _lambda)
-            (deblur_img_regolar, PSNR_regolar, MSE_regolar) = deblur_immagini(X, b, K, max_it, _lambda, use_library)
+            (deblur_img_regolar, PSNR_regolar, MSE_regolar, k, color) = deblur_immagini(X, b, K, max_it, _lambda, use_library)
             
-            plt.imshow(deblur_img_regolar, cmap = 'gray')
-            plt.title(f'regular lambda {_lambda} (PSNR: {PSNR_regolar: .2f} MSE: {MSE_regolar: .2f})', fontsize=20)
+            PSNR_last = PSNR_solNaive[ ite_solNaive -1 ]
+            MSE_last = MSE_solNaive[ ite_solNaive -1 ]
+            
+            plot_iterazioni = np.linspace(0, k, k)
+            
+            plt.figure(figsize=(30,10))
+            '''disegno'''
+            ax1 = plt.subplot(1,3,1)
+            ax1.imshow(deblur_img_regolar, cmap = 'gray')
+            plt.title(f'regular lambda {_lambda} (PSNR: {PSNR_last: .2f} MSE: {MSE_last: .2f})', fontsize=20)          
+           
+            '''plot di 'Analizza l’andamento del PSNR e dell’MSE al variare del numero di iterazioni''' 
+            ax2 = plt.subplot(1,3,2)
+            ax2.plot(plot_iterazioni, PSNR_regolar, color=color[0], marker='o', label='PSNR')
+            ax2.legend()
+            ax3 = plt.subplot(1,3,3)
+            ax3.plot(plot_iterazioni, MSE_regolar , color=color[1]  , marker='o', label='MSE' )
+            ax3.legend()
             plt.show()
         
     else:
@@ -252,7 +271,7 @@ devS = 0.02
 for img_name in ['rosa.jpeg', 'vanGogh_ricolorato.jpeg']:
     all_color = get_image_file(img_name)
     lambdas = {0.1, 0.2, 0.5, 1}
-    for lib in [False, True]: #se lib = True sto usando la libreria, altrimenti sto usando Gradienti Coniugati implementato in questo file
+    for lib in [True, False]: #se lib = True sto usando la libreria, altrimenti sto usando Gradienti Coniugati implementato in questo file
         apply_for_image(all_color, color=0, dim_kernel=5, sigma=0.5,  devSt=devS, array_lambda=lambdas, use_library=lib)
         apply_for_image(all_color, color=1, dim_kernel=7, sigma=1,    devSt=devS, array_lambda=lambdas, use_library=lib)
         apply_for_image(all_color, color=2, dim_kernel=9, sigma=1.13, devSt=devS, array_lambda=lambdas, use_library=lib)
