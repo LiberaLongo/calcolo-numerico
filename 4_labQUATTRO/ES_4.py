@@ -105,7 +105,7 @@ if mode=='plot_history':
 
 '''plots'''
 print('norm_grad_list.shape =', norm_grad_list.shape)
-x_iter = np.arange(1, k+1).reshape(norm_grad_list)
+x_iter = np.arange(1, k+1).reshape(norm_grad_list.shape)
 print('x_iter.shape = ', x_iter.shape)
 
 # Iterazioni vs Norma Gradiente
