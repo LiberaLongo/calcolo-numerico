@@ -1,0 +1,57 @@
+\documentclass{article}
+
+\title{FORMULARIO CALCOLO NUMERICO}
+\date{2023-01-27}
+\author{Libera Longo}
+
+%link utili:
+% https://latex-tutorial.com/tutorials/
+
+% https://latex.codecogs.com/eqneditor/editor.php
+
+\usepackage{imakeidx}	%indice
+\usepackage{xcolor}	%colore testo
+\usepackage{amsmath}	%matematica formule
+\usepackage{amsfonts}
+
+\makeindex
+
+\begin{document}
+	\maketitle
+	\printindex
+	\newpage
+	\section{Floating Point}
+
+Si definisce \textcolor{red}{insieme dei numeri macchina (floating-point)} con \textit{t} cifre significative,
+base $\beta$ e range $( L, U )$, l'insieme dei numeri reali definito nel modo seguente
+\\
+{\color{blue} $ \mathbb{F} ( \beta , t, L, U ) = \{ 0 \} \cup \{ x \in \mathbb{R} = sign(x) \beta^p \sum_{i=1}^{t} d_{i} \beta^{-i} \} $ }
+\\
+ove $t, \beta$ sono interi positivi con {\color{blue} $ \beta \geq 2 $ }.
+Si ha inoltre
+\\
+{\color{blue} $ 0 \leq d_i \leq \beta -1, \;\;\;\;\; i = 1, 2 $} 
+\\
+{\color{blue} $ d_i \neq 0, \;\;\;\;\; L \leq p \leq U $ } $ \;\;\;\;\; p \in \left [ L, U \right ] $
+\\
+Usualmente $U$ è positivo e $L$ negativo.
+\\
+\textcolor{red}{I numeri dell'insieme $\mathbb{F}$ sono ugualmente spaziati tra le successive potenze di $\beta$, ma non su tutto l'intervallo.}
+\\
+Esempio
+$\beta = 2, t = 3, L = -1, U = 2 $
+\\
+$\mathbb{F} = \{ 0 \} \cup \{ 0.100 \times 2^p, \; 0.101 \times 2^p, \; 0.110 \times 2^p, \; 0.111 \times 2^p , \; p = -1, 0, 1, 2 \} $
+dove $0.100 \; 0.101 \; 0.110 \; 0.111$ sono tutte le possibili mantisse e $p$ il valore dell'esponente.
+
+	\section{Condizionamento e Stabilità}
+	\section{Fattorizzaizone LR o LU}
+	\subsection{Fattorizzazione LU con pivot}
+	\section{Fattorizzazione di Cholesky}
+	\section{Interpolazione}
+	\section{Chebyshev}
+	\section{Norme}
+	\section{Punti di massimo e minimo}
+	\section{direzione e metodi di discesa}
+	\section{minimi quadrati}
+\end{document}
