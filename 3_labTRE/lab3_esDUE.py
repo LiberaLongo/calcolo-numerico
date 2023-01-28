@@ -81,7 +81,7 @@ print ('Errore di approssimazione con SVD: ', err2)
 
 '''CONFRONTO GRAFICO '''
 points = 100
-x_plot = np.linspace(1, 3, points)
+x_plot = np.linspace(10, 80, points)
 
 y_normali = p(alpha_normali, x_plot)
 y_svd = p(alpha_svd, x_plot)

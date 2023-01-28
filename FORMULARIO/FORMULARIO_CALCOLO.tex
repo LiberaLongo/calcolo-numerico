@@ -9,40 +9,63 @@
 
 % https://latex.codecogs.com/eqneditor/editor.php
 
+% https://www.overleaf.com/learn/latex/Lists
+
+% https://wwwcdf.pd.infn.it/AppuntiLinux/latex_ambienti_matematici.htm
+
+\usepackage[a4paper,left=2cm,right=3cm,top=2.5cm,bottom=2.5cm]{geometry}	%margins
 \usepackage{imakeidx}	%indice
 \usepackage{xcolor}	%colore testo
 \usepackage{amsmath}	%matematica formule
 \usepackage{amsfonts}
+\usepackage{parskip}	%paragraph with \\
 
-\makeindex
+%\makeindex
 
 \begin{document}
 	\maketitle
-	\printindex
-	\newpage
+	%\printindex
 	\section{Floating Point}
 
 Si definisce \textcolor{red}{insieme dei numeri macchina (floating-point)} con \textit{t} cifre significative,
 base $\beta$ e range $( L, U )$, l'insieme dei numeri reali definito nel modo seguente
-\\
-{\color{blue} $ \mathbb{F} ( \beta , t, L, U ) = \{ 0 \} \cup \{ x \in \mathbb{R} = sign(x) \beta^p \sum_{i=1}^{t} d_{i} \beta^{-i} \} $ }
-\\
+\[
+	\mathbb{F} ( \beta , t, L, U ) = \{ 0  \} \cup \left \{ x \in \mathbb{R} = sign(x) \beta^p \sum_{i=1}^{t} d_{i} \beta^{-i} \right \}
+\] \\
 ove $t, \beta$ sono interi positivi con {\color{blue} $ \beta \geq 2 $ }.
 Si ha inoltre
-\\
-{\color{blue} $ 0 \leq d_i \leq \beta -1, \;\;\;\;\; i = 1, 2 $} 
-\\
-{\color{blue} $ d_i \neq 0, \;\;\;\;\; L \leq p \leq U $ } $ \;\;\;\;\; p \in \left [ L, U \right ] $
-\\
-Usualmente $U$ è positivo e $L$ negativo.
-\\
-\textcolor{red}{I numeri dell'insieme $\mathbb{F}$ sono ugualmente spaziati tra le successive potenze di $\beta$, ma non su tutto l'intervallo.}
-\\
+\begin{center}
+	{\color{blue} $ 0 \leq d_i \leq \beta -1, \;\;\;\;\; i = 1, 2,... $} \\
+	{\color{blue} $ d_i \neq 0, \;\;\;\;\; L \leq p \leq U $ } $ \;\;\;\;\; p \in \left [ L, U \right ] $
+\end{center}
+Usualmente $U$ è positivo e $L$ negativo. \\
+\textcolor{red}{I numeri dell'insieme $\mathbb{F}$ sono ugualmente spaziati tra le successive potenze di $\beta$, ma non su tutto l'intervallo.} \\
 Esempio
-$\beta = 2, t = 3, L = -1, U = 2 $
-\\
+$\beta = 2, t = 3, L = -1, U = 2 $ \\
 $\mathbb{F} = \{ 0 \} \cup \{ 0.100 \times 2^p, \; 0.101 \times 2^p, \; 0.110 \times 2^p, \; 0.111 \times 2^p , \; p = -1, 0, 1, 2 \} $
 dove $0.100 \; 0.101 \; 0.110 \; 0.111$ sono tutte le possibili mantisse e $p$ il valore dell'esponente.
+
+\noindent\rule{\textwidth}{0.4pt}
+
+\begin{itemize}
+	\item In rappresentazione posizionale un numero macchina $x \neq 0$ viene denotato con $x = \pm .d_1 d_2 ... d_t \beta ^p$
+	\item La maggior parte dei calcolatori ha la possibilità di operare con lunghezze diverse di $t$, a cui corrispondono, ad esempio, la semplice e la doppia precisione.
+	\item E' importante osservare che l'insieme $\mathbb{F}$ non è un insimee continuo e neppure infinito.
+\end{itemize}
+Come rappresentare un numero reale positivo $x$ in un sistema di numeri macchina $\mathbb{F} ( \beta, t, L, U)$ ?
+\begin{itemize}
+	\item Il numero $x$ è tale che $L \leq p \leq U$ e $d_i = 0$ per $i > t$; allora $x$ è un numero macchina ed è rappresentato esattamente ({\color{blue} $x \in \mathbb{F}$}).
+	\item $p \notin \left [ L, U \right ]$; il numero non può essere rappresentato esattamente ({\color{blue} $x \notin \mathbb{F}$}).
+\\Se $p < L$, si dice che si verifica un underflow; solitamente si assume come valore approssimato del numero x il numero zero.
+\\Se $p > U$ si verifica un overflow e solitamente non si effettua nessuna approssimazione, ma il sistema di calcolo dà un avvertimento più drastico, come ad esempio, l'arresto del calcolo.
+\end{itemize}
+
+\noindent\rule{\textwidth}{0.4pt}
+
+Se una matrice $A n \times n$ ha un autovettore $\lambda = 0$, allora A è singolare.\\
+Il costo computazionale per la risoluzione di un sistema triangolare è di: 
+$O ( \frac{n^2}{2} ) $
+	\newpage
 
 	\section{Condizionamento e Stabilità}
 	\section{Fattorizzaizone LR o LU}
@@ -55,3 +78,5 @@ dove $0.100 \; 0.101 \; 0.110 \; 0.111$ sono tutte le possibili mantisse e $p$ i
 	\section{direzione e metodi di discesa}
 	\section{minimi quadrati}
 \end{document}
+
+
