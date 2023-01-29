@@ -1,2 +1,2 @@
 #!/bin/bash
-pdflatex FORMULARIO_CALCOLO.tex
+pdflatex formulario-calcolo.tex
