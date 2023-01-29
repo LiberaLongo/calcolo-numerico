@@ -5,13 +5,7 @@
 \author{Libera Longo}
 
 %link utili:
-% https://latex-tutorial.com/tutorials/
-
 % https://latex.codecogs.com/eqneditor/editor.php
-
-% https://www.overleaf.com/learn/latex/Lists
-
-% https://wwwcdf.pd.infn.it/AppuntiLinux/latex_ambienti_matematici.htm
 
 \usepackage[a4paper,left=2cm,right=3cm,top=2.5cm,bottom=2.5cm]{geometry}	%margins
 \usepackage{imakeidx}	%indice
@@ -20,6 +14,11 @@
 \usepackage{amsfonts}
 \usepackage{parskip}	%paragraph with \\
 
+\newcommand\norm[1]{\lVert#1\rVert}	%norma
+\newcommand\separationline{\noindent\rule{\textwidth}{0.4pt}} %linea
+%\renewcommand{\labelitemi}{$\bullet$}	%custom items
+\renewcommand{\labelitemii}{$\circ$}	
+\renewcommand{\labelitemiii}{$\diamond$}
 %\makeindex
 
 \begin{document}
@@ -27,56 +26,250 @@
 	%\printindex
 	\section{Floating Point}
 
-Si definisce \textcolor{red}{insieme dei numeri macchina (floating-point)} con \textit{t} cifre significative,
-base $\beta$ e range $( L, U )$, l'insieme dei numeri reali definito nel modo seguente
-\[
-	\mathbb{F} ( \beta , t, L, U ) = \{ 0  \} \cup \left \{ x \in \mathbb{R} = sign(x) \beta^p \sum_{i=1}^{t} d_{i} \beta^{-i} \right \}
-\] \\
-ove $t, \beta$ sono interi positivi con {\color{blue} $ \beta \geq 2 $ }.
-Si ha inoltre
-\begin{center}
-	{\color{blue} $ 0 \leq d_i \leq \beta -1, \;\;\;\;\; i = 1, 2,... $} \\
-	{\color{blue} $ d_i \neq 0, \;\;\;\;\; L \leq p \leq U $ } $ \;\;\;\;\; p \in \left [ L, U \right ] $
-\end{center}
-Usualmente $U$ è positivo e $L$ negativo. \\
-\textcolor{red}{I numeri dell'insieme $\mathbb{F}$ sono ugualmente spaziati tra le successive potenze di $\beta$, ma non su tutto l'intervallo.} \\
-Esempio
-$\beta = 2, t = 3, L = -1, U = 2 $ \\
-$\mathbb{F} = \{ 0 \} \cup \{ 0.100 \times 2^p, \; 0.101 \times 2^p, \; 0.110 \times 2^p, \; 0.111 \times 2^p , \; p = -1, 0, 1, 2 \} $
-dove $0.100 \; 0.101 \; 0.110 \; 0.111$ sono tutte le possibili mantisse e $p$ il valore dell'esponente.
+		Si definisce \textcolor{red}{insieme dei numeri macchina (floating-point)} con $t$ cifre significative,
+		base $\beta$ e range $( L, U )$, l'insieme dei numeri reali definito nel modo seguente
+		\[
+			\mathbb{F} ( \beta , t, L, U ) = \{ 0  \} \cup \left \{ x \in \mathbb{R} = sign(x) \beta^p \sum_{i=1}^{t} d_{i} \beta^{-i} \right \}
+		\] \\
+		ove $t, \beta$ sono interi positivi con {\color{blue} $ \beta \geq 2 $ }.
+		Si ha inoltre
+		\begin{center}
+			{\color{blue} $ 0 \leq d_i \leq \beta -1, \;\;\;\;\; i = 1, 2,... $} \\
+			{\color{blue} $ d_i \neq 0, \;\;\;\;\; L \leq p \leq U $ } $ \;\;\;\;\; p \in \left [ L, U \right ] $
+		\end{center}
+		Usualmente $U$ è positivo e $L$ negativo. \\
+		\textcolor{red}{I numeri dell'insieme $\mathbb{F}$ sono ugualmente spaziati tra le successive potenze di $\beta$, ma non su tutto l'intervallo.} \\
+		Esempio
+		$\beta = 2, \; t = 3, \; L = -1, \; U = 2 $ \\
+		$\mathbb{F} = \{ 0 \} \cup \{ 0.100 \times 2^p, \; 0.101 \times 2^p, \; 0.110 \times 2^p, \; 0.111 \times 2^p , \; p = -1, 0, 1, 2 \} $ \\
+		dove $0.100 \; 0.101 \; 0.110 \; 0.111$ sono tutte le possibili mantisse e $p$ il valore dell'esponente.
 
-\noindent\rule{\textwidth}{0.4pt}
+		\separationline
 
-\begin{itemize}
-	\item In rappresentazione posizionale un numero macchina $x \neq 0$ viene denotato con $x = \pm .d_1 d_2 ... d_t \beta ^p$
-	\item La maggior parte dei calcolatori ha la possibilità di operare con lunghezze diverse di $t$, a cui corrispondono, ad esempio, la semplice e la doppia precisione.
-	\item E' importante osservare che l'insieme $\mathbb{F}$ non è un insimee continuo e neppure infinito.
-\end{itemize}
-Come rappresentare un numero reale positivo $x$ in un sistema di numeri macchina $\mathbb{F} ( \beta, t, L, U)$ ?
-\begin{itemize}
-	\item Il numero $x$ è tale che $L \leq p \leq U$ e $d_i = 0$ per $i > t$; allora $x$ è un numero macchina ed è rappresentato esattamente ({\color{blue} $x \in \mathbb{F}$}).
-	\item $p \notin \left [ L, U \right ]$; il numero non può essere rappresentato esattamente ({\color{blue} $x \notin \mathbb{F}$}).
-\\Se $p < L$, si dice che si verifica un underflow; solitamente si assume come valore approssimato del numero x il numero zero.
-\\Se $p > U$ si verifica un overflow e solitamente non si effettua nessuna approssimazione, ma il sistema di calcolo dà un avvertimento più drastico, come ad esempio, l'arresto del calcolo.
-\end{itemize}
+		\begin{itemize}
+			\item In rappresentazione posizionale un numero macchina $x \neq 0$ viene denotato con $x = \pm .d_1 d_2 ... d_t \beta ^p$
+			\item La maggior parte dei calcolatori ha la possibilità di operare con lunghezze diverse di $t$, a cui corrispondono, ad esempio, la semplice e la doppia precisione.
+			\item E' importante osservare che l'insieme $\mathbb{F}$ non è un insimee continuo e neppure infinito.
+		\end{itemize}
+		Come rappresentare un numero reale positivo $x$ in un sistema di numeri macchina $\mathbb{F} ( \beta, t, L, U)$ ?
+		\begin{itemize}
+			\item Il numero $x$ è tale che $L \leq p \leq U$ e $d_i = 0$ per $i > t$; allora $x$ è un numero macchina ed è rappresentato esattamente ({\color{blue} $x \in \mathbb{F}$}).
+			\item $p \notin \left [ L, U \right ]$; il numero non può essere rappresentato esattamente ({\color{blue} $x \notin \mathbb{F}$}).
+			\\Se $p < L$, si dice che si verifica un underflow; solitamente si assume come valore approssimato del numero x il numero zero.
+			\\Se $p > U$ si verifica un overflow e solitamente non si effettua nessuna approssimazione, ma il sistema di calcolo dà un avvertimento più drastico, come ad esempio, l'arresto del calcolo.
+		\end{itemize}
 
-\noindent\rule{\textwidth}{0.4pt}
+		\separationline
 
-Se una matrice $A n \times n$ ha un autovettore $\lambda = 0$, allora A è singolare.\\
-Il costo computazionale per la risoluzione di un sistema triangolare è di: 
-$O ( \frac{n^2}{2} ) $
-	\newpage
+		Se una matrice $A \; n \times n$ ha un autovettore $\lambda = 0$, allora $A$ è singolare.\\
+		Il costo computazionale per la risoluzione di un sistema triangolare è di: 
+		$O ( \frac{n^2}{2} ) $
 
 	\section{Condizionamento e Stabilità}
+
+		\begin{itemize}
+			\item Un algoritmo è stabile se l'errore algoritmico è limitato
+			\begin{itemize}
+				\item Può essere limitato da una costante $c$ o da un'espressione
+			\end{itemize}
+			\item Un \underline{sistema lineare} è mal condizionato se l'errore relativo sul risultato è grande rispetto all'errore relativo sui \textbf{dati}
+			\item Un \underline{sistema lineare} è mal condizionato se il numero di condizione della matrice è grande
+			\item Un problema è mal condizionato se ad una piccola perturbazione sui dati corrisponde una grande perturbazione sul risultato
+			\[
+				K_2 = \frac {\rho}{\lambda_{min}}
+			\]
+			dove $\rho$ è il \textcolor{red}{raggio spettrale} e $\lambda_{min}$ è il più piccolo degli \textcolor{red}{autovalori}
+		\end{itemize}
+
 	\section{Fattorizzaizone LR o LU}
+
+		\begin{itemize}
+			\item Non è sempre possibile
+			\begin{itemize}
+				\item Ad esempio se un perno per cui dividere è 0
+				\item Oppure se $A$ è singolare
+			\end{itemize}
+			\item Potrebbe non essere esatta se si presentano errori di arrotondamento
+			\item Costo computazionale di $O ( \frac{n^3}{3} )$
+		\end{itemize}
+
 	\subsection{Fattorizzazione LU con pivot}
+
+		Usando la fattorizzazione $LU$ con pivoting ($PA = LU$) il sistema $A x = b$ si può risolvere risolvendo i due sistemi triangolari:
+		\[
+		\begin{cases}
+		  L y = P b \\
+		  U x = y
+		\end{cases}
+		\]
+		Ogni matrice $A \; n \times n$ non singolare è fattorizzabile $PA = LU$, con $P$ matrice di permutazione, $L$ matrice triangolare inferiore con tutti 1 sulla diagonale e $U$ triangolare superiore non singolare.
+
 	\section{Fattorizzazione di Cholesky}
+
+		\begin{itemize}
+			\item Ogni matrice $A$ simmetrica e definita positiva si può fattorizzare come prodotto di due matrici triangolari $L$ e $L'$ dove \underline{ $L'$ è la trasposta di $L$ }
+			\item Costo computazionale di $O ( \frac{n^3}{6} )$ \textcolor{blue}{ è minore della fattorizzazione LR }
+		\end{itemize}
+
 	\section{Interpolazione}
+
+		\begin{itemize}
+			\item Interpolando punti equispaziati l'errore di interpol. aumenta all'aumentare dei punti.
+			\item Per ogni insieme di coppie $\{ x_i, y_i \}$ con $i = 0 ... n$ e i nodi $x_i$ distinti tra loro, \\ \underline{esiste un unico polinomio di $grado \leq n$, che chiamiamo polinomio interpolatore} degli $y_i$ negli $x_i$
+			\item Esistono infiniti polinomi di grado n che interpolano n punti
+			\begin{itemize}
+				\item ma solo uno che ne interpola $n + 1$
+			\end{itemize} 
+		\end{itemize}
+		Vi è un numero arbitrario grande di funzioni matematiche che interpolano un dato insieme di punti.
+
 	\section{Chebyshev}
+
+		\begin{itemize}
+			\item NON si trovano per forza in $[ -5, 5 ]$, ma \textbf{attenzione}
+			\item Non sono equispaziati
+			\item Scelta dei punti di Chebyshev come \textbf{ascisse} dei dati = interpolazione più stabile.
+		\end{itemize}
+
+	\section{Numero di Condizionamento}
+
+		In generale:
+		\begin{itemize}
+			\item $K(A) = \norm{A^-1} * \norm{A}$ (commutativa) $\rightarrow$ dipende solo dalla matrice
+			\item $K(A)$ esiste solo per matrici quadrate non singolari
+			\begin{itemize}
+				\item $K(A)$ piccolo - $n^p$, $p = 0, 1, 2, 3$ $\rightarrow$ Problema ben condizionato.
+				\item $K(A)$ grande - $10^n$ $\rightarrow$ Problema mal condizionato
+				\begin{itemize}
+					\item Es: la matrice di Hilbert $\rightarrow$ $h_{i,j} = \frac{1}{i + j - 1}$ con $i, j = 1 ... n$
+				\end{itemize}
+			\end{itemize}
+			\item $K(A)$ dipende dalla norma usata ma l'ordine di grandezza è sempre lo stesso
+			\item Si dimostra che per tutte le norme p, $K(A) \geq 1$
+			\item Si dimostra che $\frac{1}{K(A)}$ è la minima distanza tra $A^{n \times n}$ e $B$, dove $B$ è la più vicina matrice appartenente all'insieme delle matrici singolari
+			\begin{itemize}
+				\item Questo significa che se $K(A)$ è alto, la matrice $A$ si comporta \underline{quasi} come una matrice singolare (il sistema non ha soluzioni) quindi, in questo caso, la soluzione è molto sensibile ai dati
+			\end{itemize}
+		\end{itemize}
+
 	\section{Norme}
+
+		\begin{itemize}
+			\item Le norme $p$ sono tutte \underline{equivalenti}, ovvero:
+			\begin{itemize}
+				\item $\exists \; c_1, \; c_2$ tali che: $c_1* \norm{x}_p \leq \norm{x}_q \leq c_2* \norm{x}_p $ con $1 < p, q < \infty$
+			\end{itemize}
+			La classe più importante di norme vettoriali è costituita dalle norme $p$:
+			\[
+				\norm{x}_p = \left ( \sum_{i=1}^{m} |x_i|^p \right )^{\frac{1}{p}}. \;\;\;\;\; 1 \leq p < q
+			\]
+			altre norme importanti sono:
+			\begin{table}[!htb]
+			\begin{tabular}{|l|l|l|}
+				\hline
+				NORMA & DEFINIZIONE & ESEMPIO \\ \hline
+				Norma Euclidea $p = 2$ &
+					 $ \norm{x}_2 = \sqrt{ \sum\limits_{i=1}^{m} |x_i|^2 } = x^T x $ &
+						\begin{tabular}[c]{@{}l@{}}
+							$x = (-1,2,3)$ \\
+							$\norm{x}_2 = \sqrt{1^2 + 2^2 + 3^2} = \sqrt{1 + 4 + 9} = \sqrt{14}$
+						\end{tabular} \\ \hline
+				Norma 1 $p = 1$ &
+					 $ \norm{x}_1 = \sum\limits_{i=1}^{m} |x_i| $ &
+						\begin{tabular}[c]{@{}l@{}}
+							$x = (-1,2,3)$ \\
+							$\norm{x}_1 = |1| + |2| + |3| = 6 $
+						\end{tabular} \\ \hline
+				Norma infinito &
+					$\norm{x}_\infty = \max\limits_{1 \leq i \leq m} |x_i| $ &
+						\begin{tabular}[c]{@{}l@{}}
+							$x = (-1,2,3)$ \\
+							$\norm{x}_\infty = \max(|1|, |2|, |3|) = 3 $
+						\end{tabular} \\ \hline
+			\end{tabular}
+			\end{table}
+
+			\begin{table}[!htb]
+				\begin{tabular}{|l|l|}
+					\hline
+					$\norm{A}_1$       &  $ \max \sum\limits_{i=1}^{m} |a_{i,j}| $ per $1 \leq j \leq n $            \\ \hline
+					$\norm{A}_\infty$  &  $ \max \sum\limits_{j=1}^{m} |a_{i,j}| $ per $1 \leq i \leq n $            \\ \hline
+					Norma di Frobenius &  $ \norm{A}_F = \sqrt{\sum\limits_{i=1}^{m} \sum\limits_{j=1}^{n} |a_{i,j}|^2 } $ \\ \hline
+					$\norm{A}_2$       & 
+						\begin{tabular}[c]{@{}l@{}}
+							$\sqrt{ \rho ( A^T A )}$ \\
+							Dove $\rho$ è il raggio spettrale ovvero l'autovalore massimo in modulo
+						\end{tabular} \\ \hline
+				\end{tabular}
+			\end{table}
+		\end{itemize}
+		Se $A$ è una matrice quadrata $n \times n$, allora:
+		\[
+			\norm{A}_2 = \sqrt{\max_{\lambda \in A^T A} \lambda} \;\;\;\;\;\; \norm{A}_2 = \sqrt{\rho ( A^T A )}
+		\]
+		\[
+			\norm{A}_\infty = \max_{i} \sum_{j=1}^{n} |a_{i,j}|
+		\]
+
 	\section{Punti di massimo e minimo}
+
+		\begin{itemize}
+			\item \textbf{Teorema} (Condizioni \textbf{necessarie} del primo ordine): se $x^*$ è un punto di minimo locale e $f$ è differenziabile con continuità in un intorno aperto di $x^*$, allora $\nabla f(x^*) = 0$. Un punto $x^*$ tale che $\nabla f(x^*) = 0$ si chiama \underline{punto stazionario} (minimo, massimo, sella).
+			\item \textbf{Teorema} (Condizioni \textbf{necessarie} del secondo ordine): se $x^*$ è un punto di minimo locale di $f$ e $f$ è \underline{due volte} differenziabile con continuità in un intorno aperto di $x^*$, allora $\nabla f(x^*) = 0$ e $\nabla ^2 f(x^*)$ \underline{è semidefinita positiva}.
+			\item \textbf{Teorema} (Condizioni \textbf{sufficienti} del secondo ordine): se:
+			\begin{itemize}
+				\item $f$ è due volte differenziabile con continuità in un intorno aperto di $x^*$;
+				\item $\nabla f(x^*) = 0$ (condizione di punto stazionario);
+				\item $\nabla f(x^*)$ è definita positiva.
+			\end{itemize}
+			Allora $x^*$ è un punto di minimo in senso streto di $f$.
+			\item Se $f$ è convessa, un punto di minimo locale è un punto di minimo globale. In particolare:
+			\begin{itemize}
+				\item $f$ convessa $\rightarrow$ ogni punto di minimo locale $x^*$ è punto di minimo globale di f.
+				\item $f$ strettamente convessa $\rightarrow$ esiste un unico punto di minimo globale.
+				\begin{itemize}
+					\item \textbf{E OGNI PUNTO STAZIONARIO E' MINIMO GLOBALE}
+				\end{itemize}
+			\end{itemize}
+		\end{itemize}
+
 	\section{direzione e metodi di discesa}
+
+		\textbf{Definizione}: Il vettore $p$ è una direzione di discesa in $f$ se\\ esiste un $m > 0$ tale che
+		\[
+			f(x + \alpha p ) < f(x) \forall \alpha \in ] 0, m ]
+		\]
+		\underline{\textbf{Lemma}}: Sia $f \in C^1$, il vettore $p$ è una direzione di discesa di $f$ se \textbf{ $p^T \nabla f(x) < 0$ }
+		\begin{itemize}
+			\item Un metodo di discesa garantisce $f(x_k + 1) < f(x_k), \; k = 0, 1, 2 ...$
+			\item Nei metodi di discesa si calcola $x_{k+1} = x_k + a_k p_k$
+			\item Nel metodo del gradiente la dir. di discesa di $f$ in $x_k$ è $ - \nabla f(x_k)$
+			\item $ - \nabla f(x_k)$ ($\neq 0$) è sempre una direzione di discesa
+			\item Un m. di discesa convergente converge al minimo locale (se str. convessa è globale)
+		\end{itemize}
+
 	\section{minimi quadrati}
+
+		Sia $A$ una \textcolor{red}{matrice $m \times n$, con $m > n$} e $rg(A) = k \leq n$.
+		Allora il problema $min {\norm{A x - b}_2}^2$
+		\begin{itemize}
+			\item Ammette sempre almeno una soluzione;
+			\item Se $k = n$ (rango massimo) il problema ha una ed una sola soluzione;
+			\begin{itemize}
+				\item Si risolve con equazioni normali $\rightarrow$ \textbf{ $A^T * A x = A^T b$ }
+			\end{itemize}
+			\item Se $k < n$ il problema ha infinite soluzioni;
+			\begin{itemize}
+				\item Tali soluzioni formano un sottospazio di $\mathbb{R}^n$ di dimensione $n - k$
+				\item Si risolve con scomposizione \textbf{\textcolor{red}{SVD}} (in valori singolari)
+				\begin{itemize}
+					\item SVD SI PUO' FARE SU QUALUNQUE MATRICE (\underline{anche per decomprimerla})
+					\item Valori singolari $\sigma_1 \geq \sigma_2 \geq ... \geq \sigma_k > \sigma_k+1 = ... = \sigma_n = 0$ dove $k = rg(A)$ \\
+					"ha esattamente $r$ ($r = rg(A)$) valori singolari $> 0$"
+				\end{itemize}
+			\end{itemize}
+		\end{itemize}
+
 \end{document}
 
 
