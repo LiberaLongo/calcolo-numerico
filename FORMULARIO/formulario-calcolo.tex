@@ -135,7 +135,7 @@
 
 		In generale:
 		\begin{itemize}
-			\item $K(A) = \norm{A^-1} * \norm{A}$ (commutativa) $\rightarrow$ dipende solo dalla matrice
+			\item $K(A) = \norm{A^{-1}} * \norm{A}$ (commutativa) $\rightarrow$ dipende solo dalla matrice
 			\item $K(A)$ esiste solo per matrici quadrate non singolari
 			\begin{itemize}
 				\item $K(A)$ piccolo - $n^p$, $p = 0, 1, 2, 3$ $\rightarrow$ Problema ben condizionato.
@@ -241,7 +241,7 @@
 		\]
 		\underline{\textbf{Lemma}}: Sia $f \in C^1$, il vettore $p$ è una direzione di discesa di $f$ se \textbf{ $p^T \nabla f(x) < 0$ }
 		\begin{itemize}
-			\item Un metodo di discesa garantisce $f(x_k + 1) < f(x_k), \; k = 0, 1, 2 ...$
+			\item Un metodo di discesa garantisce $f(x_{k+1}) < f(x_k), \; k = 0, 1, 2 ...$
 			\item Nei metodi di discesa si calcola $x_{k+1} = x_k + a_k p_k$
 			\item Nel metodo del gradiente la dir. di discesa di $f$ in $x_k$ è $ - \nabla f(x_k)$
 			\item $ - \nabla f(x_k)$ ($\neq 0$) è sempre una direzione di discesa
